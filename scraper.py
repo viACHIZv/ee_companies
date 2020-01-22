@@ -53,7 +53,7 @@ from urllib2 import urlopen
 from io import BytesIO, TextIOWrapper
 from zipfile import ZipFile
 import csv
-from collections import OrderedDict
+# from collections import OrderedDict
 import json
 
 
@@ -73,10 +73,10 @@ with ZipFile(BytesIO(response.read())) as zfile:
 print("Done reading CSV")
 head = reader[0]
 print(head)
-data = reader
+data = reader[1:]
 table = []
 for i in data:
-    reader = OrderedDict(zip(head, i))
+    reader = dict(zip(head, i))
     table.append(reader)
-scraperwiki.sqlite.save(['ariregistri_kood'], data=json.dumps(table), table_name='ee-companies')
+scraperwiki.sqlite.save(['ariregistri_kood'], data=table, table_name='ee-companies')
 # scraperwiki.sqlite.save(unique_keys=['name'], data=[{"name": "susan", "occupation": "software developer"},{"name": "david", "occupation": "developer"}])  
