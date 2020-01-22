@@ -73,13 +73,15 @@ with ZipFile(BytesIO(response.read())) as zfile:
 print("Done reading CSV")
 head = reader[0]
 print(head)
-data = reader[1:11]
-table = []
-for i in data:
-    reader = dict(zip(head, i))
-    table.append(reader)
-table = json.loads(json.dumps(table, ensure_ascii=False))
-print(table)
+data = reader[1:]
+
+for i in range(len(data) // 10 + 1):
+    table = []
+    for j in data[10*i:10*(i + 1)]:
+        reader = dict(zip(head, j))
+        table.append(reader)
+    table = json.loads(json.dumps(table, ensure_ascii=False))
+    scraperwiki.sqlite.save(['ariregistri_kood'], data=table, table_name='ee-companies')
 # table = [{u'ads_adr_id':u'2182337',u'ads_ads_oid':u'',u'ads_normaliseeritud_taisaadress':u'Harju maakond, Tallinn, Haabersti linnaosa, \xd5ism\xe4e tee 78-9',u'ariregistri_kood':u'12754230',u'asukoha_ehak_kood':u'0176',u'asukoha_ehak_tekstina':u'Haabersti linnaosa, Tallinn, Harju maakond',u'asukoht_ettevotja_aadressis':u'\xd5ism\xe4e tee 78-9',u'ettevotja_aadress':u'',u'ettevotja_esmakande_kpv':u'17.11.2014',u'ettevotja_staatus':u'R',u'ettevotja_staatus_tekstina':u'Registrisse kantud',u'indeks_ettevotja_aadressis':u'13513',u'kmkr_nr':u'',u'nimi':u'001 group O\xdc',u'teabesysteemi_link':u'https://ariregister.rik.ee/ettevotja.py?ark=12754230&ref=rekvisiidid'},{u'ads_adr_id':u'2182337',u'ads_ads_oid':u'',u'ads_normaliseeritud_taisaadress':u'Harju maakond, Tallinn, Haabersti linnaosa, \xd5ism\xe4e tee 78-9',u'ariregistri_kood':u'12652512',u'asukoha_ehak_kood':u'0176',u'asukoha_ehak_tekstina':u'Haabersti linnaosa, Tallinn, Harju maakond',u'asukoht_ettevotja_aadressis':u'\xd5ism\xe4e tee 78-9',u'ettevotja_aadress':u'',u'ettevotja_esmakande_kpv':u'25.04.2014',u'ettevotja_staatus':u'R',u'ettevotja_staatus_tekstina':u'Registrisse kantud',u'indeks_ettevotja_aadressis':u'13513',u'kmkr_nr':u'EE101721589',u'nimi':u'001 Kinnisvara O\xdc',u'teabesysteemi_link':u'https://ariregister.rik.ee/ettevotja.py?ark=12652512&ref=rekvisiidid'}]
 # scraperwiki.sqlite.save(unique_keys=['name'], data=[{"name": "susan", "occupation": "software developer"},{"name": "david", "occupation": "developer"}])  
-scraperwiki.sqlite.save(['ariregistri_kood'], data=table, table_name='ee-companies')
+
